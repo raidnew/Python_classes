@@ -32,13 +32,11 @@ def checkLikeWords(word1, word2):
             break
     else: return True
     return False
-    #print(list(map(lambda l1: (l1[0] in vowelsLetters and l1[1] in vowelsLetters), zip(word1, word2))))
 
 likeWords = []
 notLikeWords = []
 
 for word in arrWords:
-    print(baseword, word)
     if(checkLikeWords(baseword, word)):
         likeWords.append(word)
     else:
