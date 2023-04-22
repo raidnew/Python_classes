@@ -5,8 +5,8 @@ from calendar import monthrange
 
 week_days = ("monday", "tuesday", "wensedday", "thursday", "friday", "saturday", "sunday")
 
-def test(year = 2000, month = 1):
+def days_in_month(year = 2000, month = 1):
     start_week_day, days_lst = monthrange(year, month)
     return [(date + 1, week_days[(start_week_day + date) % 7]) for date in range(days_lst)]
 
-print(test(2023, 4))
+print(days_in_month(2023, 4))
