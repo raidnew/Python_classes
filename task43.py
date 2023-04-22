@@ -22,15 +22,3 @@ def get_free_date(check_year = 2023):
 
 print(get_free_date(2023))
 
-"""
-print(monthrange(check_year, 1))
-
-counter = itertools.count(0)
-
-print([
-    (day, month)
-    for month in range(COUNT_MONTH)
-    for day in range(monthrange(check_year, month + 1)[1])
-    if (day + monthrange(check_year, month + 1)[0]) % COUNT_DAYS_IN_WEEK == FREE_DAY_INDEX and next(counter) == 2
-])
-"""
