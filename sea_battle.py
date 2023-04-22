@@ -10,9 +10,15 @@
 import os
 import random
 
+import yaml
+
+NAME_FILE_SAVE = "saved_game.sbs"
+
 field = []
 rows = []
 cols = []
+allowed_miss_count = 0
+ship_count = 0
 
 cell_type = {"EMPTY":0, "SHIP":1, "CRUSH":2, "BROKEN":3, "BUSY": 4}
 
@@ -118,20 +124,48 @@ def shoot(row, col):
         print("Invalid coordinates")
     return is_hit
 
-def start_game(miss_count, ship_count):
+def check_command(command):
+    global allowed_miss_count, ship_count
+    match(command.lower()):
+        case "save":
+            save_game()
+        case "load":
+            load_game()
+        case _:
+            return False
+    return True
+
+def init_game():
+    global field, rows, cols, allowed_miss_count, ship_count
+    rows, cols, field = generate_empty_field(10)
+    allowed_miss_count = 10
+    ship_count = 10
+    install_ships(ship_count)
+
+def start_game():
+    global allowed_miss_count, ship_count
     end_game = False
     win = False
     while(not end_game):
         draw_field()
-        print("Осталось %d промахов" % miss_count)
-        row = input("Номер строки: ")
-        col = input("Буква стобца: ")
+        print("Осталось %d промахов" % allowed_miss_count)
+
+        try:
+            row = input("Номер строки: ")
+            if(check_command(row)): continue
+
+            col = input("Буква столбца: ")
+            if(check_command(col)): continue
+        except KeyboardInterrupt:
+            print("Bye!")
+            break
+
         if not shoot(row, col.upper()):
-            miss_count -= 1
+            allowed_miss_count -= 1
         else:
             ship_count -= 1
-            
-        if(miss_count == 0):
+
+        if(allowed_miss_count == 0):
             end_game = True
             break
 
@@ -145,12 +179,30 @@ def start_game(miss_count, ship_count):
     else:
         print("Вы проиграли")
 
+def serialize_game():
+    global field, allowed_miss_count, ship_count
+    return {"field": field, "miss": allowed_miss_count, "ships": ship_count}
+
+def deserialize_game(object):
+    global field, allowed_miss_count, ship_count
+    field = object['field']
+    allowed_miss_count = object['miss']
+    ship_count = object['ships']
+
+def save_game():
+    game_state = serialize_game()
+    with open(NAME_FILE_SAVE, "w") as file:
+        yaml.dump(game_state, file)
+
+def load_game():
+    with open(NAME_FILE_SAVE, "r") as file:
+        data = yaml.safe_load(file)
+        deserialize_game(data)
+
 
 def main():
-    global field, rows, cols
-    rows, cols, field = generate_empty_field(10)
-    install_ships(10)
-    start_game(20, 10)
+    init_game()
+    start_game()
 
 main()
 
