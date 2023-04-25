@@ -17,7 +17,6 @@ def get_free_date(check_year = 2023):
         for day in range(calendar.monthrange(check_year, month + 1)[1]):
             if((day + calendar.monthrange(check_year, month + 1)[0]) % COUNT_DAYS_IN_WEEK == FREE_DAY_INDEX):
                 day_count += 1
-                #print(str(day),"  ",str((day + monthrange(check_year, month + 1)[0]) % COUNT_DAYS_IN_WEEK)+"  "+str(day_count))
                 if(day_count == FREE_DAY_NUM):
                     free_date_lst.append((month, day))
     return free_date_lst;
