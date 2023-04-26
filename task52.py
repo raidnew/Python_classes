@@ -27,7 +27,7 @@ class Task:
         self.id = task_id
 
     def try_solve_task(self):
-        self.state = Task.STATE_OK
+        self.__dict__['state'] = Task.STATE_OK
 
     def confirm_taks(self):
         #todo validate teacher caller
@@ -35,7 +35,7 @@ class Task:
             self.state = Task.STATE_OK_CONFIRMED
 
     def __setattr__(self, key, value):
-        if(self.state != Task.STATE_OK_CONFIRMED):
+        if(key == "state" and self.state != Task.STATE_OK_CONFIRMED):
             self.__dict__[key] = value
         else:
             #task already solve
@@ -49,24 +49,22 @@ class Pupil:
     tasks:[Task] #task assigned pupil
 
     def get_task_by_id(self, task_id):
-        task:Task = tasks[0]
+        task:Task = self.tasks[0]
         return task
 
     def add_lesson(self, lesson:Lesson):
         #TODO ad task from lesson to pupil
-        tasks += lesson.tasks[0:]
+        self.tasks += lesson.tasks[0:]
         pass
 
     def task_solve(self, task_id):
-        get_task_by_id(task_id).try_solve_task()
+        self.get_task_by_id(task_id).try_solve_task()
         pass
 
-    def get_task(self, task_id):
-        return get_task_by_id(task_id)
+
 
 class Group:
     pupils:[Pupil]
-    teacher:Teacher
     id: 0
 
     def add_lesson(self, lesson):
@@ -74,10 +72,7 @@ class Group:
         pass
 
 class Teacher:
-
     groups:[Group]
 
     def check_task(self, group_id, pupil_id, task_id, confirm):
-
-
-    pass
+        pass
