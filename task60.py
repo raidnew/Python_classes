@@ -74,23 +74,29 @@ class CheckPasswords:
 
 
     def _validate_length(self, password):
-        if len(password) < 9:
-            raise LengthError()
-            return False
-        else:
+        if len(password) >= 9:
             return True
+        else:
+            raise LengthError()
+        return False
 
     def _validate_letter(self, password):
+        found_upper = False
+        found_lower = False
         for letter in password:
-            if letter.isupper():
+            if letter.isupper(): found_upper = True
+            if letter.islower(): found_lower = True
+            if(found_upper and found_lower):
                 return True
         raise LetterError()
+        return False
 
     def _validate_digit(self, password):
         for letter in password:
             if letter.isdigit():
                 return True
         raise DigitError()
+        return False
 
     def _check_password(self, password):
         return (self._validate_length(password) and
