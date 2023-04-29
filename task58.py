@@ -15,6 +15,7 @@ from abc import ABC, abstractmethod
 
 class Transport(ABC):
 
+    name = None
     speed = None
     cost = None
     price = None
@@ -27,8 +28,12 @@ class Transport(ABC):
     def Info(self):
         pass
 
+    def print_info(self):
+        print(f"{self.name} transport: Speed: {self.speed}  Cost: {self.cost}  Price: {self.price}")
+
 class Marine(Transport):
     def __init__(self):
+        self.name = "Marine"
         self.speed = 20
 
     def Cost(self):
@@ -36,10 +41,11 @@ class Marine(Transport):
         self.price = 20
 
     def Info(self):
-        print(f"Marine transport: Speed: {self.speed}  Cost: {self.cost}  Price: {self.price}")
+        self.print_info()
 
 class Ground(Transport):
     def __init__(self):
+        self.name = "Ground"
         self.speed = 50
 
     def Cost(self):
@@ -47,7 +53,7 @@ class Ground(Transport):
         self.price = 30
 
     def Info(self):
-        print(f"Ground transport: Speed: {self.speed}  Cost: {self.cost}  Price: {self.price}")
+        self.print_info()
 
 marine_transport = Marine()
 ground_transport = Ground()
