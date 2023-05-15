@@ -25,5 +25,5 @@ SELECT *
 FROM `Child` as c
 LEFT JOIN `Mark` as m ON m.id_child = c.id
 GROUP BY c.id
-HAVING SUM(mark_value <= 3) <= 0
+HAVING SUM(m.mark_value <= 3) <= 0
 
