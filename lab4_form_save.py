@@ -1,15 +1,13 @@
 #todo:
-# Для модели вашего варианта БД создать ORM модель в SQLAlchemy. Сгенерировать ее в БД.
-# Переписать запросы с SQL на ORM.
+# Для вашего варианта системы разработать интерфейсы ввода данных и записать их в БД.
 
-from flask import Flask
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__, template_folder='templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:zzzzxxxx@localhost:5432'
 app.app_context().push()
 db = SQLAlchemy(app)
-#metadata = db.MetaData()
 
 class Child(db.Model):
     __tablename__ = 'child'
@@ -63,4 +61,20 @@ class ScheduleGroup(db.Model):
     schedules = db.Column(db.ForeignKey('schedule.id'), primary_key=True)
     groups = db.Column(db.ForeignKey('group.id'), primary_key=True)
 
-db.create_all()
+@app.route("/")
+@app.route("/index")
+def index_page():
+    return render_template("form.tpl")
+
+@app.route("/submit", methods=['POST'])
+def submit_page():
+
+    if request.method == 'POST':
+        result = request.form
+
+    new_user = Teacher(name=result['name'])
+    db.session.add(new_user)
+    db.session.commit()
+    return render_template("submit.tpl",result = result)
+
+app.run()
