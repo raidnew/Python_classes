@@ -8,10 +8,9 @@ router = APIRouter()
 @router.get('/')
 def get_teacher(db: Session = Depends(get_db), limit: int = 10, page: int = 1, search: str = ''):
     skip = (page - 1) * limit
-
     notes = db.query(models.Teacher).filter(
-        models.Note.title.contains(search)).limit(limit).offset(skip).all()
-    return {'status': 'success', 'results': len(notes), 'notes': notes}
+        models.Teacher.name.contains(search)).limit(limit).offset(skip).all()
+    return {'status': 'success', 'results': len(notes), 'teachers': notes}
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 def create_teacher(payload: schemas.Teacher, db: Session = Depends(get_db)):
@@ -19,7 +18,7 @@ def create_teacher(payload: schemas.Teacher, db: Session = Depends(get_db)):
     db.add(new_note)
     db.commit()
     db.refresh(new_note)
-    return {"status": "success", "note": new_note}
+    return {"status": "success", "teacher": new_note}
 
 
 @router.patch('/{noteId}')
@@ -35,7 +34,7 @@ def update_teacher(noteId: str, payload: schemas.Teacher, db: Session = Depends(
                                                        synchronize_session=False)
     db.commit()
     db.refresh(db_note)
-    return {"status": "success", "note": db_note}
+    return {"status": "success", "teacher": db_note}
 
 @router.get('/{teacherId}')
 def get_post(teacherId: str, db: Session = Depends(get_db)):
@@ -43,7 +42,7 @@ def get_post(teacherId: str, db: Session = Depends(get_db)):
     if not note:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"No note with this id: {id} found")
-    return {"status": "success", "note": note}
+    return {"status": "success", "teacher": note}
 
 @router.delete('/{teacherId}')
 def delete_post(teacherId: str, db: Session = Depends(get_db)):
