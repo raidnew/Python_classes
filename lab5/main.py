@@ -1,4 +1,4 @@
-import models, note
+import models, teacher, user
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine
@@ -21,7 +21,8 @@ app.add_middleware(
 )
 
 
-app.include_router(note.router, tags=['Notes'], prefix='/api/notes')
+app.include_router(teacher.router, tags=['Teachers'], prefix='/api/teacher')
+app.include_router(user.router, tags=['Users'], prefix='/api/user')
 
 
 @app.get("/api/healthchecker")

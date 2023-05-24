@@ -6,15 +6,15 @@ from database import get_db
 router = APIRouter()
 
 @router.get('/')
-def get_teacher(db: Session = Depends(get_db), limit: int = 10, page: int = 1, search: str = ''):
+def get_user(db: Session = Depends(get_db), limit: int = 10, page: int = 1, search: str = ''):
     skip = (page - 1) * limit
-    notes = db.query(models.Teacher).filter(
-        models.Teacher.name.contains(search)).limit(limit).offset(skip).all()
+    notes = db.query(models.User).filter(
+        models.User.username.contains(search)).limit(limit).offset(skip).all()
     return {'status': 'success', 'results': len(notes), 'teachers': notes}
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def create_teacher(payload: schemas.Teacher, db: Session = Depends(get_db)):
-    new_note = models.Teacher(**payload.dict())
+def create_user(payload: schemas.User, db: Session = Depends(get_db)):
+    new_note = models.User(**payload.dict())
     db.add(new_note)
     db.commit()
     db.refresh(new_note)
@@ -22,31 +22,31 @@ def create_teacher(payload: schemas.Teacher, db: Session = Depends(get_db)):
 
 
 @router.patch('/{noteId}')
-def update_teacher(noteId: str, payload: schemas.Teacher, db: Session = Depends(get_db)):
-    note_query = db.query(models.Teacher).filter(models.Teacher.id == noteId)
+def update_user(noteId: str, payload: schemas.User, db: Session = Depends(get_db)):
+    note_query = db.query(models.User).filter(models.User.id == noteId)
     db_note = note_query.first()
 
     if not db_note:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'No note with this id: {noteId} found')
     update_data = payload.dict(exclude_unset=True)
-    note_query.filter(models.Teacher.id == noteId).update(update_data,
+    note_query.filter(models.User.id == noteId).update(update_data,
                                                        synchronize_session=False)
     db.commit()
     db.refresh(db_note)
     return {"status": "success", "teacher": db_note}
 
-@router.get('/{teacherId}')
+@router.get('/{userId}')
 def get_post(teacherId: str, db: Session = Depends(get_db)):
-    note = db.query(models.Teacher).filter(models.Teacher.id == teacherId).first()
+    note = db.query(models.User).filter(models.User.id == userId).first()
     if not note:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"No note with this id: {id} found")
     return {"status": "success", "teacher": note}
 
-@router.delete('/{teacherId}')
-def delete_post(teacherId: str, db: Session = Depends(get_db)):
-    note_query = db.query(models.Teacher).filter(models.Teacher.id == teacherId)
+@router.delete('/{userId}')
+def delete_post(userId: str, db: Session = Depends(get_db)):
+    note_query = db.query(models.User).filter(models.User.id == userId)
     note = note_query.first()
     if not note:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
